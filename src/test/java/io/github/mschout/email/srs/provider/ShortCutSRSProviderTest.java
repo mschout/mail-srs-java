@@ -2,11 +2,11 @@ package io.github.mschout.email.srs.provider;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import com.google.common.collect.ImmutableList;
 import io.github.mschout.email.srs.SRS;
 import io.github.mschout.email.srs.SRSAddress;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
-import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -15,7 +15,7 @@ public class ShortCutSRSProviderTest {
 
   @BeforeEach
   public void createProvider() {
-    shortCutProvider = new SRSProviderFactory().createProvider(SRS.Type.SHORTCUT, List.of("dummy-secret"));
+    shortCutProvider = SRSProviderFactory.createProvider(SRS.Type.SHORTCUT, ImmutableList.of("dummy-secret"));
   }
 
   @Test

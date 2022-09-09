@@ -2,6 +2,7 @@ package io.github.mschout.email.srs.provider;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import com.google.common.collect.ImmutableList;
 import io.github.mschout.email.srs.SRS;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
@@ -49,14 +50,14 @@ public class GuardedSRSProviderTest {
 
   @Test
   public void usernames() throws NoSuchAlgorithmException, InvalidKeyException {
-    List<String> addresses = List.of(
+    List<String> addresses = ImmutableList.of(
       "user@domain-with-dash.com",
       "user-with-dash@domain.com",
       "user+with+plus@domain.com",
       "user%with!everything&everything=@domain.somewhere"
     );
 
-    List<String> aliases = List.of("user1@tld1.com", "user2@tld2.com");
+    List<String> aliases = ImmutableList.of("user1@tld1.com", "user2@tld2.com");
 
     for (String email : addresses) {
       String srs0 = srs.forward(email, aliases.get(0));
@@ -85,7 +86,7 @@ public class GuardedSRSProviderTest {
 
   @Test
   public void caseSensitivity() throws NoSuchAlgorithmException, InvalidKeyException {
-    List<String> addresses = List.of(
+    List<String> addresses = ImmutableList.of(
       "User@domain-with-dash.com",
       "User-with-dash@domain.com",
       "User+with+plus@domain.com",

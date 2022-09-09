@@ -1,5 +1,6 @@
 package io.github.mschout.email.srs;
 
+import com.google.common.collect.ImmutableList;
 import io.github.mschout.email.srs.provider.SRSProvider;
 import io.github.mschout.email.srs.provider.SRSProviderFactory;
 import java.security.InvalidKeyException;
@@ -31,7 +32,7 @@ public class SRS {
   }
 
   public SRS(Type type, String secret) {
-    this(type, List.of(secret));
+    this(type, ImmutableList.of(secret));
   }
 
   /**

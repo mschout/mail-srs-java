@@ -2,6 +2,7 @@ package io.github.mschout.email.srs.provider;
 
 import com.google.common.base.CharMatcher;
 import com.google.common.base.Splitter;
+import com.google.common.collect.ImmutableList;
 import io.github.mschout.email.srs.SRSAddress;
 import java.security.InvalidKeyException;
 import java.util.Iterator;
@@ -26,7 +27,7 @@ public class GuardedSRSProvider extends ShortCutSRSProvider implements SRSProvid
         String host = addressIter.next();
         String user = addressIter.next();
 
-        if (isHashInvalid(List.of(host, user), hash)) throw new IllegalArgumentException("Invalid SRS1 Address: " + srsAddress);
+        if (isHashInvalid(ImmutableList.of(host, user), hash)) throw new IllegalArgumentException("Invalid SRS1 Address: " + srsAddress);
 
         if (host.isEmpty()) throw new IllegalArgumentException("Invalid SRS1 Address: " + srsAddress);
 
@@ -58,14 +59,14 @@ public class GuardedSRSProvider extends ShortCutSRSProvider implements SRSProvid
       String srsHost = addressIter.next();
       String srsUser = addressIter.next();
 
-      String hash = createHash(List.of(srsHost, srsUser));
+      String hash = createHash(ImmutableList.of(srsHost, srsUser));
 
       return String.join(SRSSEP, SRSPrefix.SRS1, hash, srsHost, srsUser);
     } else if (isSRS0(user)) {
       // Remove tag, but preserve separator
       user = user.substring(SRSPrefix.SRS0.length());
 
-      String hash = createHash(List.of(host, user));
+      String hash = createHash(ImmutableList.of(host, user));
 
       return String.join(SRSSEP, SRSPrefix.SRS1, hash, host, user);
     }

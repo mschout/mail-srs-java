@@ -1,6 +1,7 @@
 package io.github.mschout.email.srs.provider;
 
 import com.google.common.base.Splitter;
+import com.google.common.collect.ImmutableList;
 import io.github.mschout.email.srs.SRSAddress;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
@@ -143,7 +144,7 @@ public class ShortCutSRSProvider implements SRSProvider {
       String host = addressIter.next();
       String user = addressIter.next();
 
-      if (isHashInvalid(List.of(timestamp, host, user), hash)) {
+      if (isHashInvalid(ImmutableList.of(timestamp, host, user), hash)) {
         throw new IllegalArgumentException("Invalid address hash: " + hash);
       }
 
