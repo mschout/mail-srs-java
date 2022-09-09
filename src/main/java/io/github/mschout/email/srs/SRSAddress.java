@@ -3,6 +3,9 @@ package io.github.mschout.email.srs;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
+/**
+ * SRS Address Object
+ */
 @RequiredArgsConstructor
 @Getter
 public class SRSAddress {

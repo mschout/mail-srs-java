@@ -6,6 +6,11 @@ import io.github.mschout.email.srs.provider.SRSProviderFactory;
 import java.security.InvalidKeyException;
 import java.util.List;
 
+/**
+ * Email Sender Rewriting Scheme.
+ *
+ * This is the main entry point for convering email addresses to or from the sender rewriting scheme.
+ */
 public class SRS {
 
   public enum Type {
@@ -27,6 +32,13 @@ public class SRS {
     return new SRS(Type.GUARDED, secrets);
   }
 
+  /**
+   * Constructor
+   * @param type The SRS provider type.
+   * @param secrets The list of secrets for generating the SRS hashes.  Must contain at least one value.
+   *                If multiple secrets are given, then the first entry is the one that will be used for
+   *                creating hashes, but any other secrets will be checked when verifying hashes.
+   */
   public SRS(Type type, List<String> secrets) {
     this.provider = SRSProviderFactory.createProvider(type, secrets);
   }
