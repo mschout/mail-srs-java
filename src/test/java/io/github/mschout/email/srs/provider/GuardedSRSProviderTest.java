@@ -5,7 +5,6 @@ import static org.junit.jupiter.api.Assertions.*;
 import com.google.common.collect.ImmutableList;
 import io.github.mschout.email.srs.SRS;
 import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -19,7 +18,7 @@ public class GuardedSRSProviderTest {
   }
 
   @Test
-  public void forward() throws NoSuchAlgorithmException, InvalidKeyException {
+  public void forward() throws InvalidKeyException {
     String addr = "user@domain-with-dash.com";
 
     String srs0 = srs.forward(addr, "foo.com");
@@ -38,7 +37,7 @@ public class GuardedSRSProviderTest {
   }
 
   @Test
-  public void reverse() throws NoSuchAlgorithmException, InvalidKeyException {
+  public void reverse() throws InvalidKeyException {
     String addr = "user@domain-with-dash.com";
 
     String alias0 = srs.forward(addr, "foo.com");
@@ -49,7 +48,7 @@ public class GuardedSRSProviderTest {
   }
 
   @Test
-  public void usernames() throws NoSuchAlgorithmException, InvalidKeyException {
+  public void usernames() throws InvalidKeyException {
     List<String> addresses = ImmutableList.of(
       "user@domain-with-dash.com",
       "user-with-dash@domain.com",
@@ -73,7 +72,7 @@ public class GuardedSRSProviderTest {
   }
 
   @Test
-  public void invalidHash() throws NoSuchAlgorithmException, InvalidKeyException {
+  public void invalidHash() throws InvalidKeyException {
     String srs0 = srs.forward("user@domain.com", "example.com");
 
     // Replace hash with XXXX
@@ -85,7 +84,7 @@ public class GuardedSRSProviderTest {
   }
 
   @Test
-  public void caseSensitivity() throws NoSuchAlgorithmException, InvalidKeyException {
+  public void caseSensitivity() throws InvalidKeyException {
     List<String> addresses = ImmutableList.of(
       "User@domain-with-dash.com",
       "User-with-dash@domain.com",

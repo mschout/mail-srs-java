@@ -6,7 +6,6 @@ import com.google.common.collect.ImmutableList;
 import io.github.mschout.email.srs.SRS;
 import io.github.mschout.email.srs.SRSAddress;
 import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -19,7 +18,7 @@ public class ShortCutSRSProviderTest {
   }
 
   @Test
-  public void compileAndParse() throws NoSuchAlgorithmException, InvalidKeyException {
+  public void compileAndParse() throws InvalidKeyException {
     String compiled = shortCutProvider.compile("example.com", "jdoe");
 
     assertTrue(compiled.endsWith("=example.com=jdoe"));
