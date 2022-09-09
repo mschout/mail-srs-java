@@ -1,36 +1,64 @@
 plugins {
-    id 'java'
-    id 'maven-publish'
+  id 'java-library'
+  id 'maven-publish'
+  id "com.diffplug.spotless" version "6.10.0"
+}
+
+
+java {
+  toolchain {
+    languageVersion.set(JavaLanguageVersion.of(8))
+  }
 }
 
 repositories {
-    mavenLocal()
-    maven {
-        url = uri('https://repo.maven.apache.org/maven2/')
-    }
+  mavenLocal()
+  maven {
+    url = uri('https://repo.maven.apache.org/maven2/')
+  }
 }
 
 dependencies {
-    implementation 'com.google.guava:guava:31.1-jre'
-    testImplementation 'org.junit.jupiter:junit-jupiter:5.9.0'
-    compileOnly 'org.projectlombok:lombok:1.18.24'
-    annotationProcessor 'org.projectlombok:lombok:1.18.24'
-    testAnnotationProcessor 'org.projectlombok:lombok:1.18.24'
+  implementation 'com.google.guava:guava:31.1-jre'
+  testImplementation 'org.junit.jupiter:junit-jupiter:5.9.0'
+  testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.9.0'
+  compileOnly 'org.projectlombok:lombok:1.18.24'
+  annotationProcessor 'org.projectlombok:lombok:1.18.24'
+  testAnnotationProcessor 'org.projectlombok:lombok:1.18.24'
 }
 
 group = 'io.github.mschout'
 version = '1.0-SNAPSHOT'
 description = 'srs2-java'
-java.sourceCompatibility = JavaVersion.VERSION_1_8
+
+test {
+  useJUnitPlatform()
+}
+
+// Format java code with spotlessApply task
+spotless {
+  java {
+    prettier(['prettier': '2.0.5', 'prettier-plugin-java': '0.8.0'])
+      .config([
+        'parser': 'java',
+        'tabWidth': 2,
+        'printWidth': 140,
+        'trailingComma': 'none',
+        'useTabs': false
+      ])
+  }
+}
 
 publishing {
-    publications {
-        maven(MavenPublication) {
-            from(components.java)
-        }
+  publications {
+    maven(MavenPublication) {
+      from(components.java)
     }
+  }
 }
 
 tasks.withType(JavaCompile) {
-    options.encoding = 'UTF-8'
+  options.encoding = 'UTF-8'
 }
+
+// vim: ft=groovy
