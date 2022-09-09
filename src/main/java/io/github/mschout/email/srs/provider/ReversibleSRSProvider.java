@@ -1,7 +1,6 @@
 package io.github.mschout.email.srs.provider;
 
 import com.google.common.collect.ImmutableList;
-
 import java.security.InvalidKeyException;
 import java.util.List;
 
