@@ -48,6 +48,15 @@ public class SRS {
   }
 
   /**
+   * Return true if the address is an SRS address
+   * @param address the email address to check
+   * @return true if the address is an SRS0 or SRS1 address, false otherwise
+   */
+  public boolean isSRS(final String address) {
+    return provider.isSRS0(address) || provider.isSRS1(address);
+  }
+
+  /**
    * Rewrite an email address using SRS for forwarding.
    * @param sender the sender email address
    * @param alias the local host address or alias

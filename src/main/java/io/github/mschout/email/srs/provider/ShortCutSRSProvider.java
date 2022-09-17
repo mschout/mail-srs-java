@@ -71,13 +71,13 @@ public class ShortCutSRSProvider implements SRSProvider {
     return separators.indexOf(ch) != -1;
   }
 
-  protected boolean isSRS0(String address) {
+  public boolean isSRS0(String address) {
     String prefix = SRSPrefix.SRS0;
 
     return (address.toUpperCase().startsWith(prefix) && isSepChar(address.charAt(prefix.length())));
   }
 
-  protected boolean isSRS1(String address) {
+  public boolean isSRS1(String address) {
     String prefix = SRSPrefix.SRS1;
     return (address.toUpperCase().startsWith(prefix) && isSepChar(address.charAt(prefix.length())));
   }
