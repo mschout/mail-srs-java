@@ -2,7 +2,6 @@ package io.github.mschout.email.srs.provider;
 
 import io.github.mschout.email.srs.SRS;
 import java.util.List;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 

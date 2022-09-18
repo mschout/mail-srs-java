@@ -108,4 +108,51 @@ class SRSTest {
       "Failed to create an object with bad separator"
     );
   }
+
+  @Test
+  public void varySeparator() throws InvalidKeyException {
+    List<String> tests = ImmutableList.of(
+      "user@domain-with-dash.com",
+      "user-with-dash@domain.com",
+      "user+with+plus@domain.com",
+      "user=with=equals@domain.com",
+      "user%with!everything&everything=@domain.somewhere"
+    );
+
+    String alias0 = "alias@host.com";
+    String alias1 = "name@forwarder.com";
+    String alias2 = "user@postal.com";
+
+    for (SRS.Type type : ImmutableList.of(SRS.Type.GUARDED, SRS.Type.REVERSIBLE, SRS.Type.SHORTCUT)) {
+      SRS srs0 = new SRS(SRSProviderFactory.builder().separator("+").build().createProvider(type, ImmutableList.of("foo")));
+
+      SRS srs1 = new SRS(SRSProviderFactory.builder().separator("-").build().createProvider(type, ImmutableList.of("foo")));
+
+      SRS srs2 = new SRS(SRSProviderFactory.builder().separator("=").build().createProvider(type, ImmutableList.of("foo")));
+
+      for (String test : tests) {
+        String srs0Addr = srs0.forward(test, alias0);
+        String srs0Rev = srs0.reverse(srs0Addr);
+        assertEquals(test, srs0Rev, "Idempotent on " + test);
+
+        String srs1Addr = srs1.forward(srs0Addr, alias1);
+        String srs1Rev = srs1.reverse(srs1Addr);
+
+        if (type == SRS.Type.SHORTCUT) {
+          assertEquals(test, srs1Rev, "Shortcut S2 idempotent on " + test);
+        } else {
+          assertEquals(srs0Addr, srs1Rev, "S2 idempotent on " + srs0Addr);
+        }
+
+        String srs2Addr = srs2.forward(srs1Addr, alias2);
+        String srs2Rev = srs2.reverse(srs2Addr);
+
+        if (type == SRS.Type.GUARDED) {
+          assertEquals(srs0Addr, srs2Rev, "'Guarded S3 idempotent on " + srs1Addr);
+        } else if (type == SRS.Type.REVERSIBLE) {
+          assertEquals(srs1Addr, srs2Rev, "Reversible S3 idempotent on " + srs1Addr);
+        }
+      }
+    }
+  }
 }
