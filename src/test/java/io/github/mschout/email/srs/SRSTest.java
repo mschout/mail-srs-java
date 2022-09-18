@@ -155,4 +155,41 @@ class SRSTest {
       }
     }
   }
+
+  @Test
+  public void caselessTests() throws InvalidKeyException {
+    for (SRS.Type type : ImmutableList.of(SRS.Type.GUARDED, SRS.Type.REVERSIBLE, SRS.Type.SHORTCUT)) {
+      SRSProvider provider = SRSProviderFactory.builder().separator("+").build().createProvider(type, ImmutableList.of("foo"));
+
+      SRS srs = new SRS(provider);
+
+      // All have at least one upper case char so that case smashing does at least something.
+      List<String> tests = ImmutableList.of(
+        "User@domain-with-dash.com",
+        "User-with-dash@domain.com",
+        "User+with+plus@domain.com",
+        "User=with=equals@domain.com",
+        "User%with!everything&everything=@domain.somewhere"
+      );
+
+      String alias0 = "alias@host.com";
+      String alias1 = "name@forwarder.com";
+
+      // We smash case in here, so we must test case insensitively.
+      for (String test : tests) {
+        String srs0Addr = srs.forward(test, alias0).toLowerCase();
+        String srs0Rev = srs.reverse(srs0Addr);
+        assertTrue(srs0Rev.equalsIgnoreCase(test), "Idempotent on " + test);
+
+        String srs1Addr = srs.forward(srs0Addr, alias1).toLowerCase();
+        String srs1Rev = srs.reverse(srs1Addr);
+
+        if (type == SRS.Type.SHORTCUT) {
+          assertTrue(test.equalsIgnoreCase(srs1Rev), "Shortcut S2 idempotent on " + test);
+        } else {
+          assertTrue(srs0Addr.equalsIgnoreCase(srs1Rev), "S2 idempotent on " + srs0Addr);
+        }
+      }
+    }
+  }
 }
