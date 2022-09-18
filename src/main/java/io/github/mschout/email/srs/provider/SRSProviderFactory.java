@@ -2,19 +2,24 @@ package io.github.mschout.email.srs.provider;
 
 import io.github.mschout.email.srs.SRS;
 import java.util.List;
+
+import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.RequiredArgsConstructor;
 
 @Builder
-@RequiredArgsConstructor
+@AllArgsConstructor
 public class SRSProviderFactory {
-  private final Integer maxAge;
+  @Builder.Default
+  private final Integer maxAge = 49;
 
-  private final Integer hashMinLength;
+  @Builder.Default
+  private final Integer hashMinLength = 4;
 
-  private final Integer hashLength;
+  @Builder.Default
+  private final Integer hashLength = 4;
 
-  private final String separator;
+  @Builder.Default
+  private final String separator = "=";
 
   public SRSProvider createProvider(SRS.Type type, List<String> secrets) {
     switch (type) {
