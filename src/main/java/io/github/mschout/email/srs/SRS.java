@@ -69,13 +69,25 @@ public class SRS {
   }
 
   /**
-   * Rewrite an email address using SRS for forwarding.
+   * Rewrite an email address using SRS for forwarding, using "false" for alwaysRewrite
    * @param sender the sender email address
    * @param alias the local host address or alias
    * @return The rewritten SRS address
    * @throws InvalidKeyException If the secret is missing or invalid.
    */
   public String forward(final String sender, final String alias) throws InvalidKeyException {
+    return forward(sender, alias, false);
+  }
+
+  /**
+   * Rewrite an email address using SRS for forwarding.
+   * @param sender the sender email address
+   * @param alias the local host address or alias
+   * @param alwaysRewrite use true to always rewrite addresses, even if they match the alias host.
+   * @return The rewritten SRS address
+   * @throws InvalidKeyException If the secret is missing or invalid.
+   */
+  public String forward(final String sender, final String alias, boolean alwaysRewrite) throws InvalidKeyException {
     int atPos = sender.indexOf('@');
     if (atPos == -1) throw new IllegalArgumentException("Sender " + sender + "contains on @");
 
@@ -91,7 +103,7 @@ public class SRS {
     if (atPos != -1) aliasHost = aliasHost.substring(atPos + 1);
 
     // TODO reference implementation has AlwaysRewrite option that determines if we do this or not.
-    if (aliasHost.equalsIgnoreCase(sendHost)) return sendUser + "@" + sendHost;
+    if (aliasHost.equalsIgnoreCase(sendHost) && !alwaysRewrite) return sendUser + "@" + sendHost;
 
     return provider.compile(sendHost, sendUser) + "@" + aliasHost;
   }
