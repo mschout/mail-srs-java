@@ -9,19 +9,35 @@ import java.util.*;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
-@RequiredArgsConstructor
+@SuperBuilder
 public class ShortCutSRSProvider implements SRSProvider {
   @Getter
   private final List<String> secrets;
+
+  private final Integer hashLength;
+
+  private final Integer hashMinLength;
+
+  @Getter
+  protected final String separator;
 
   protected final String SRSSEP = "=";
 
   protected final String separators = "-+=";
 
+  public ShortCutSRSProvider(List<String> secrets, int hashLength, int hashMinLength, String separator) {
+    if (!separators.contains(separator)) throw new IllegalArgumentException("Initial separator must be = - or +, not " + separator);
+
+    this.secrets = secrets;
+    this.hashLength = hashLength;
+    this.hashMinLength = hashMinLength;
+    this.separator = separator;
+  }
+
   protected String createHash(List<String> value) throws InvalidKeyException {
-    return createHash(value, secrets.get(0));
+    return createHash(value, getSecret());
   }
 
   private String createHash(List<String> value, String secret) throws InvalidKeyException {
@@ -34,14 +50,16 @@ public class ShortCutSRSProvider implements SRSProvider {
 
       String data = String.join("", value).toLowerCase();
 
-      return Base64.getEncoder().encodeToString(mac.doFinal(data.getBytes())).substring(0, 4);
+      return Base64.getEncoder().encodeToString(mac.doFinal(data.getBytes())).substring(0, hashLength);
     } catch (NoSuchAlgorithmException e) {
-      // Really should never happens since we hard coded HmacSHA1
+      // Really should never happen since we hard coded HmacSHA1
       throw new RuntimeException(e);
     }
   }
 
   protected boolean isHashInvalid(List<String> value, String hash) {
+    if (hash.length() < hashMinLength) return false;
+
     List<String> validHashes = new ArrayList<>();
 
     for (String secret : secrets) {
@@ -102,20 +120,20 @@ public class ShortCutSRSProvider implements SRSProvider {
     hashData.add(timestamp);
 
     if (isSRS0(user)) {
+      // This dulplicates effort in GuardedSRSProvider but makes this file work standalone
       user = removePrefix(user);
 
-      Iterator<String> addressIter = Splitter.on(SRSSEP).limit(4).split(user).iterator();
+      List<String> addressIter = Splitter.on(SRSSEP).limit(4).splitToList(user);
 
-      addressIter.next(); // discard hash
-      host = addressIter.next();
-      user = addressIter.next();
+      host = addressIter.get(2);
+      user = addressIter.get(3);
     } else if (isSRS1(user)) {
       // This should never be hit in practice.  It would be bad.
       // Introduce compatibility with the guarded format?
       // tag, SRSHOST, hash, timestamp, host, user
-      List<String> addressParts = Splitter.on(SRSSEP).limit(6).splitToList(user);
-      host = addressParts.get(3);
-      user = addressParts.get(4);
+      List<String> addressIter = Splitter.on(SRSSEP).limit(6).splitToList(user);
+      host = addressIter.get(3);
+      user = addressIter.get(4);
     }
 
     hashData.add(host);
@@ -123,7 +141,7 @@ public class ShortCutSRSProvider implements SRSProvider {
 
     String hash = createHash(hashData);
 
-    return String.join(SRSSEP, SRSPrefix.SRS0, hash, timestamp, host, user);
+    return SRSPrefix.SRS0 + getSeparator() + String.join(SRSSEP, hash, timestamp, host, user);
   }
 
   @Override
@@ -154,5 +172,10 @@ public class ShortCutSRSProvider implements SRSProvider {
     } catch (NoSuchElementException e) {
       throw new IllegalArgumentException("Invalid SRS Address: " + srsAddress);
     }
+  }
+
+  @Override
+  public String getSecret() {
+    return secrets.get(0);
   }
 }

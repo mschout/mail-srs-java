@@ -11,4 +11,8 @@ public interface SRSProvider {
   String compile(String host, String user) throws InvalidKeyException;
 
   SRSAddress parse(String srsAddress);
+
+  String getSecret();
+
+  String getSeparator();
 }

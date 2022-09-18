@@ -8,11 +8,13 @@ import java.security.InvalidKeyException;
 import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
+import lombok.experimental.SuperBuilder;
 
+@SuperBuilder
 public class GuardedSRSProvider extends ShortCutSRSProvider implements SRSProvider {
 
-  public GuardedSRSProvider(List<String> secrets) {
-    super(secrets);
+  public GuardedSRSProvider(List<String> secrets, int hashLength, int hashMinLength, String separator) {
+    super(secrets, hashLength, hashMinLength, separator);
   }
 
   @Override
@@ -61,14 +63,14 @@ public class GuardedSRSProvider extends ShortCutSRSProvider implements SRSProvid
 
       String hash = createHash(ImmutableList.of(srsHost, srsUser));
 
-      return String.join(SRSSEP, SRSPrefix.SRS1, hash, srsHost, srsUser);
+      return SRSPrefix.SRS1 + getSeparator() + String.join(SRSSEP, hash, srsHost, srsUser);
     } else if (isSRS0(user)) {
       // Remove tag, but preserve separator
       user = user.substring(SRSPrefix.SRS0.length());
 
       String hash = createHash(ImmutableList.of(host, user));
 
-      return String.join(SRSSEP, SRSPrefix.SRS1, hash, host, user);
+      return SRSPrefix.SRS1 + getSeparator() + String.join(SRSSEP, hash, host, user);
     }
 
     return super.compile(host, user);

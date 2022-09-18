@@ -3,11 +3,14 @@ package io.github.mschout.email.srs.provider;
 import com.google.common.collect.ImmutableList;
 import java.security.InvalidKeyException;
 import java.util.List;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
+@SuperBuilder
 public class ReversibleSRSProvider extends ShortCutSRSProvider implements SRSProvider {
 
-  public ReversibleSRSProvider(List<String> secrets) {
-    super(secrets);
+  public ReversibleSRSProvider(List<String> secrets, int hashLength, int hashMinLength, String separator) {
+    super(secrets, hashLength, hashMinLength, separator);
   }
 
   @Override

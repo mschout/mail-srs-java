@@ -1,15 +1,14 @@
 package io.github.mschout.email.srs;
 
 import com.google.common.collect.ImmutableList;
+import io.github.mschout.email.srs.provider.DefaultSRSProviderFactory;
 import io.github.mschout.email.srs.provider.SRSProvider;
-import io.github.mschout.email.srs.provider.SRSProviderFactory;
 import java.security.InvalidKeyException;
 import java.util.List;
 
 /**
  * Email Sender Rewriting Scheme.
- *
- * This is the main entry point for convering email addresses to or from the sender rewriting scheme.
+ * This is the main entry point for converting email addresses to or from the sender rewriting scheme.
  */
 public class SRS {
 
@@ -40,11 +39,24 @@ public class SRS {
    *                creating hashes, but any other secrets will be checked when verifying hashes.
    */
   public SRS(Type type, List<String> secrets) {
-    this.provider = SRSProviderFactory.createProvider(type, secrets);
+    this.provider = DefaultSRSProviderFactory.getInstance().createProvider(type, secrets);
   }
 
+  /**
+   * Construct an SRS object using Default Provider Factory for the given type and secret.
+   * @param type the provider type
+   * @param secret the hash secret.
+   */
   public SRS(Type type, String secret) {
     this(type, ImmutableList.of(secret));
+  }
+
+  /**
+   * Construct an SRS object using the given provider.
+   * @param provider The SRS Provider
+   */
+  public SRS(SRSProvider provider) {
+    this.provider = provider;
   }
 
   /**
@@ -98,5 +110,9 @@ public class SRS {
     SRSAddress parsedAddr = provider.parse(user);
 
     return parsedAddr.getUser() + "@" + parsedAddr.getHost();
+  }
+
+  public String getSecret() {
+    return provider.getSecret();
   }
 }
