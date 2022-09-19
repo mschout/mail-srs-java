@@ -27,6 +27,14 @@ public class ShortCutSRSProvider implements SRSProvider {
 
   protected final String separators = "-+=";
 
+  /**
+   * Create a new shortcut SRS provider.
+   *
+   * @param secrets The list of secrets for hash generation and verification
+   * @param hashLength The hash length to use in generated addresses
+   * @param hashMinLength Minimum hash length when parsing addresses
+   * @param separator The initial separator character
+   */
   public ShortCutSRSProvider(List<String> secrets, int hashLength, int hashMinLength, String separator) {
     if (!separators.contains(separator)) throw new IllegalArgumentException("Initial separator must be = - or +, not " + separator);
 
