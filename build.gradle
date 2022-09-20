@@ -11,6 +11,9 @@ plugins {
 
   // publishToSonatype and closeAndReleaseSonatypeStagingRepository tasks
   id 'io.github.gradle-nexus.publish-plugin' version '1.1.0'
+
+  // set version from git tag
+  id 'com.olafmertens.git-version' version '0.1.1'
 }
 
 group = 'io.github.mschout'
@@ -74,7 +77,6 @@ publishing {
     maven(MavenPublication) {
       groupId    = 'io.github.mschout'
       artifactId = 'mail-srs-java'
-      version    = '0.9.1'
 
       from components.java
 
