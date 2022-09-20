@@ -13,6 +13,9 @@ plugins {
   id 'io.github.gradle-nexus.publish-plugin' version '1.1.0'
 }
 
+group = 'io.github.mschout'
+description = 'mail-srs-java'
+
 repositories {
   mavenLocal()
   maven {
@@ -55,6 +58,10 @@ spotless {
 
 tasks.withType(JavaCompile) {
   options.encoding = 'UTF-8'
+}
+
+tasks.withType(Javadoc) {
+  options.addStringOption('Xdoclint:none', '-quiet')
 }
 
 signing {
