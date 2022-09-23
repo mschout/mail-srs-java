@@ -13,6 +13,12 @@ import lombok.experimental.SuperBuilder;
 
 @SuperBuilder
 public class ShortCutSRSProvider implements SRSProvider {
+  /**
+   * @param The list of secrets for encoding addresses and verfiying hashes.  If the list size is > 1, the first value
+   *            will be the one used when creating hashes, but when verifying hashes, all of the values will be tried.
+   *            This way you can rotate secrets and allow time for the old hashes to expire.
+   * @return The list of secrets.
+   */
   @Getter
   private final List<String> secrets;
 
