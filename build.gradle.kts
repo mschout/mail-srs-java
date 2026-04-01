@@ -1,11 +1,18 @@
+import com.vanniktech.maven.publish.JavadocJar
+import com.vanniktech.maven.publish.KotlinJvm
+
 plugins {
   id("mschout.all-conventions")
-  `java-library`
+  id("mschout.maven-publish-conventions")
 }
 
 group = "io.github.mschout"
 
-description = "mail-srs-java"
+description = "Interface to Email Sender Rewriting Scheme for Java"
+
+val gitVersion: groovy.lang.Closure<String> by extra
+
+val version = gitVersion()
 
 repositories {
   mavenLocal()
@@ -14,82 +21,44 @@ repositories {
 
 java { sourceCompatibility = JavaVersion.VERSION_17 }
 
+kotlin { jvmToolchain(17) }
+
 dependencies {
   testImplementation(libs.kotest.runner.junit5)
   testImplementation(libs.kotest.assertions.core)
 }
 
-// java {
-//    toolchain {
-//        languageVersion.set(JavaLanguageVersion.of(8))
-//    }
-//
-//    withSourcesJar()
-//    withJavadocJar()
-// }
-//
-// tasks.test {
-//    useJUnitPlatform()
-// }
+mavenPublishing {
+  configure(KotlinJvm(javadocJar = JavadocJar.Dokka("dokkaGenerateModuleHtml")))
 
-// tasks.withType<JavaCompile> {
-//    options.encoding = "UTF-8"
-// }
+  publishToMavenCentral()
 
-// tasks.withType<Javadoc> {
-//    (options as StandardJavadocDocletOptions).addStringOption("Xdoclint:none", "-quiet")
-// }
-// signing {
-//  useGpgCmd()
-//  sign publishing.publications
-// }
-//
-// publishing {
-//  publications {
-//    maven(MavenPublication) {
-//      groupId    = 'io.github.mschout'
-//      artifactId = 'mail-srs-java'
-//
-//      from components.java
-//
-//      pom {
-//        name = "${groupId}:${artifactId}"
-//        description = 'Interface to Email Sender Rewriting Scheme for Java'
-//        url = 'https://github.com/mschout/mail-srs-java'
-//        licenses {
-//          license {
-//            name = 'The Apache License, Version 2.0'
-//            url = 'https://www.apache.org/licenses/LICENSE-2.0.txt'
-//          }
-//        }
-//        developers {
-//          developer {
-//            name = 'Michael Schout'
-//            email = 'schoutm@gmail.com'
-//            organizationUrl = 'https://github.com/mscnout'
-//          }
-//        }
-//        scm {
-//          connection = 'scm:git:git://github.com/mschout/mail-srs-java.git'
-//          developerConnection = 'scm:git:ssh://github.com:mschout/mail-srs-java.git'
-//          url = 'https://github.com/mschout/mail-srs-java/tree/master'
-//        }
-//      }
-//    }
-//  }
-// }
-//
-// jgitver {
-//  autoIncrementPatch false;
-// }
+  signAllPublications()
 
-// nexusPublishing {
-//  repositories {
-//    sonatype {
-//      nexusUrl = uri("https://s01.oss.sonatype.org/service/local/")
-//      snapshotRepositoryUrl = uri("https://s01.oss.sonatype.org/content/repositories/snapshots/")
-//      username = System.getenv("OSSRH_USERNAME") ?: 'credentials'
-//      password = System.getenv("OSSRH_PASSWORD") ?: 'credentials'
-//    }
-//  }
-// }
+  coordinates(group.toString(), "mail-srs-java", version)
+
+  pom {
+    name.set("$group:${name}")
+    description.set(project.description)
+    url.set("https://github.com/mschout/mail-srs-java")
+
+    licenses {
+      license {
+        name.set("The Apache License, Version 2.0")
+        url.set("https://www.apache.org/licenses/LICENSE-2.0.txt")
+      }
+    }
+    developers {
+      developer {
+        id.set("mschout")
+        name.set("Michael Schout")
+        url.set("https://github.com/mschout")
+      }
+    }
+    scm {
+      url.set("https://github.com/mschout/mail-srs-java")
+      connection.set("scm:git:git://github.com/mschout/mail-srs-java.git")
+      developerConnection.set("scm:git:ssh://github.com:mschout/mail-srs-java.git")
+    }
+  }
+}
