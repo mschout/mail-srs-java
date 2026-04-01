@@ -1,6 +1,5 @@
 plugins {
   id("mschout.all-conventions")
-  id("io.freefair.lombok") version ("9.2.0")
   `java-library`
 }
 
@@ -13,10 +12,11 @@ repositories {
   mavenCentral()
 }
 
+java { sourceCompatibility = JavaVersion.VERSION_17 }
+
 dependencies {
-  implementation("com.google.guava:guava:31.1-jre")
-  testImplementation("org.junit.jupiter:junit-jupiter:5.9.0")
-  testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.9.0")
+  testImplementation("io.kotest:kotest-runner-junit5:5.9.1")
+  testImplementation("io.kotest:kotest-assertions-core:5.9.1")
 }
 
 // java {
