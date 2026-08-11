@@ -10,9 +10,9 @@ group = "io.github.mschout"
 
 description = "Interface to Email Sender Rewriting Scheme for Java"
 
-val gitVersion: groovy.lang.Closure<String> by extra
+val gitVersion = extra["gitVersion"] as groovy.lang.Closure<*>
 
-val version = gitVersion()
+version = gitVersion.call().toString()
 
 repositories {
   mavenLocal()
@@ -35,7 +35,7 @@ mavenPublishing {
 
   signAllPublications()
 
-  coordinates(group.toString(), "mail-srs-java", version)
+  coordinates(group.toString(), "mail-srs-java", version.toString())
 
   pom {
     name.set("$group:${name}")
