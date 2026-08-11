@@ -1,0 +1,45 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": ["config:recommended", ":dependencyDashboard"],
+  "timezone": "America/Chicago",
+  "schedule": ["before 6am on monday"],
+  "prConcurrentLimit": 5,
+  "prHourlyLimit": 0,
+  "labels": ["dependencies"],
+  "packageRules": [
+    {
+      "description": "Kotest runner and assertions must move in lockstep; test-only, so automerge non-majors",
+      "groupName": "kotest",
+      "matchPackageNames": ["io.kotest:*"],
+      "matchUpdateTypes": ["minor", "patch"],
+      "automerge": true
+    },
+    {
+      "description": "Kotest majors still get a grouped PR, but reviewed by hand",
+      "groupName": "kotest",
+      "matchPackageNames": ["io.kotest:*"],
+      "matchUpdateTypes": ["major"]
+    },
+    {
+      "description": "My own libraries and convention plugins get their own PR, no batching",
+      "groupName": "mschout artifacts",
+      "matchPackageNames": ["io.github.mschout*"]
+    },
+    {
+      "description": "Automerge non-major GitHub Actions bumps once CI is green",
+      "matchManagers": ["github-actions"],
+      "matchUpdateTypes": ["minor", "patch"],
+      "automerge": true
+    },
+    {
+      "description": "Gradle wrapper updates land in their own PR for manual review",
+      "matchManagers": ["gradle-wrapper"],
+      "groupName": "gradle wrapper"
+    }
+  ],
+  "vulnerabilityAlerts": {
+    "labels": ["dependencies", "security"],
+    "schedule": ["at any time"]
+  },
+  "osvVulnerabilityAlerts": true
+}
