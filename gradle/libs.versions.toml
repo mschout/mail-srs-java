@@ -1,6 +1,11 @@
 [versions]
 kotest = "6.1.10"
+mschout-conventions = "0.6.0"
 
 [libraries]
 kotest-assertions-core = { module = "io.kotest:kotest-assertions-core", version.ref = "kotest" }
 kotest-runner-junit5 = { module = "io.kotest:kotest-runner-junit5", version.ref = "kotest" }
+
+[plugins]
+mschout-all-conventions = { id = "io.github.mschout.all-conventions", version.ref = "mschout-conventions" }
+mschout-maven-publish-conventions = { id = "io.github.mschout.maven-publish-conventions", version.ref = "mschout-conventions" }
