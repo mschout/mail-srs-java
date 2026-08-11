@@ -84,6 +84,36 @@ class GuardedSRSProviderTest :
         }
       }
 
+      test("rewrap SRS1 whose hash contains separator characters") {
+        // With secret "foo", the SRS1 hash for this address is "I+eG". The "+" in the
+        // hash must not be treated as a field separator when the address is rewrapped
+        // by another forwarder.
+        val srs0Addr = "SRS0+k4rh=GE=domain-with-dash.com=user@host.com"
+
+        val srs1 =
+            SRS(
+                SRSProviderFactory.builder()
+                    .separator("-")
+                    .build()
+                    .createProvider(SRS.Type.GUARDED, listOf("foo"))
+            )
+        val srs2 =
+            SRS(
+                SRSProviderFactory.builder()
+                    .separator("=")
+                    .build()
+                    .createProvider(SRS.Type.GUARDED, listOf("foo"))
+            )
+
+        val srs1Addr = srs1.forward(srs0Addr, "name@forwarder.com")
+        srs1Addr shouldStartWith "SRS1-I+eG="
+
+        val srs2Addr = srs2.forward(srs1Addr, "user@postal.com")
+
+        srs1.reverse(srs1Addr) shouldBe srs0Addr
+        srs2.reverse(srs2Addr) shouldBe srs0Addr
+      }
+
       test("invalidHash") {
         val srs0 = srs.forward("user@domain.com", "example.com")
 

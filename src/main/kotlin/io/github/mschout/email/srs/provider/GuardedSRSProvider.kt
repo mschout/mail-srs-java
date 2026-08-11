@@ -95,7 +95,9 @@ class GuardedSRSProvider(
     if (isSRS1(user)) {
       val strippedUser = removePrefix(user)
 
-      val parts = strippedUser.split("-", "+", "=", limit = 3)
+      // Inner separators are always "=". The hash may contain "+" or "-" (base64),
+      // so splitting on those would corrupt the address.
+      val parts = strippedUser.split(SRSSEP, limit = 3)
       val srsHost = parts[1]
       val srsUser = parts[2]
 
