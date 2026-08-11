@@ -19,10 +19,6 @@ repositories {
   mavenCentral()
 }
 
-java { sourceCompatibility = JavaVersion.VERSION_17 }
-
-kotlin { jvmToolchain(17) }
-
 dependencies {
   testImplementation(libs.kotest.runner.junit5)
   testImplementation(libs.kotest.assertions.core)
