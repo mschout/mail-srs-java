@@ -1,5 +1,5 @@
 [versions]
-kotest = "6.2.4"
+kotest = "6.2.5"
 mschout-conventions = "0.7.1"
 
 [libraries]
