@@ -6,6 +6,11 @@
   "prConcurrentLimit": 5,
   "prHourlyLimit": 0,
   "labels": ["dependencies"],
+  "automerge": true,
+  "automergeType": "pr",
+  "platformAutomerge": false,
+  "pruneBranchAfterAutomerge": true,
+  "pruneStaleBranches": true,
   "packageRules": [
     {
       "description": "Kotest runner and assertions must move in lockstep; test-only, so automerge non-majors",
