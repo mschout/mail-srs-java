@@ -1,6 +1,6 @@
 [versions]
 kotest = "6.2.7"
-mschout-conventions = "0.7.1"
+mschout-conventions = "0.7.2"
 
 [libraries]
 kotest-assertions-core = { module = "io.kotest:kotest-assertions-core", version.ref = "kotest" }
